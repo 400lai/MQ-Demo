@@ -1,6 +1,10 @@
 package com.laiiiii.consumer.mq;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +35,20 @@ public class SpringRabbitListener {
         log.info("消费者2监听到 fanout.queue2的消息: {}", message);
     }
 
-    @RabbitListener(queues = "direct.queue1")
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = "direct.queue1", durable = "true"),
+            exchange = @Exchange(name = "hmall.direct", type = ExchangeTypes.DIRECT),
+            key = {"red", "blue"}
+    ))
     public void listenDirectQueue1(String message) {
         log.info("消费者1监听到 direct.queue1的消息: {}", message);
     }
 
-    @RabbitListener(queues = "direct.queue2")
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = "direct.queue2"),
+            exchange = @Exchange(name = "hmall.direct", type = ExchangeTypes.DIRECT),
+            key = {"red", "yellow"}
+    ))
     public void listenDirectQueue2(String message) {
         log.info("消费者2监听到 direct.queue2的消息: {}", message);
     }
