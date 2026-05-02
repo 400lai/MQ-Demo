@@ -1,13 +1,16 @@
 package com.laiiiii.publisher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.UUID;
+@Slf4j
 @SpringBootTest
 class SimpleAmqpTest {
 
@@ -63,5 +66,33 @@ class SimpleAmqpTest {
         msg.put("age", 18);
         // 2.发送消息
         rabbitTemplate.convertAndSend("object.queue", msg);
+    }
+
+    @Test
+    public void testConfirmCallback() {
+        // 1.创建CorrelationData
+        CorrelationData cd = new CorrelationData(UUID.randomUUID().toString());
+        // 2.给Future添加ConfirmCallback
+        cd.getFuture().thenAccept(
+                result -> {
+                    if (result.isAck()) {
+                        log.debug("发送消息成功，收到 ack!");
+                    } else {
+                        log.error("发送消息失败，收到 nack, reason : {}", result.getReason());
+                    }
+                }
+        ).exceptionally(
+                ex -> {
+                    log.error("send message fail", ex);
+                    return null;
+                }
+        );
+
+        // 3.指定交换机名称
+        String exchangeName = "hmall.direct";
+        // 4.准备消息
+        String message = "红色警戒！";
+        // 5.发送消息（必须传入 CorrelationData 才能触发 Confirm 回调）
+        rabbitTemplate.convertAndSend(exchangeName, "red111", message, cd);
     }
 }
