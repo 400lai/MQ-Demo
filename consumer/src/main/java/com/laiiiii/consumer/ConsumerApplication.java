@@ -1,4 +1,4 @@
-package com.itheima.consumer;
+package com.laiiiii.consumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
