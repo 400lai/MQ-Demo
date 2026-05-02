@@ -31,4 +31,14 @@ class SimpleAmqpTest {
             rabbitTemplate.convertAndSend(queueName, message);
         }
     }
+
+    @Test
+    public void testFanoutQueue() {
+        // 1.指定交换机名称
+        String exchangeName = "hmall.fanout";
+        // 2.准备消息
+        String message = "Hello, Spring Amqp!";
+        // 3.发送消息
+        rabbitTemplate.convertAndSend(exchangeName, "", message);
+    }
 }

@@ -20,4 +20,14 @@ public class SpringRabbitListener {
     public void listenWorkQueue2(String message) {
         log.info("【消费者2】接收到消息: {}", message);
     }
+
+    @RabbitListener(queues = "fanout.queue1")
+    public void listenFanoutQueue1(String message) {
+        log.info("消费者1监听到 fanout.queue1的消息: {}", message);
+    }
+
+    @RabbitListener(queues = "fanout.queue2")
+    public void listenFanoutQueue2(String message) {
+        log.info("消费者2监听到 fanout.queue2的消息: {}", message);
+    }
 }
