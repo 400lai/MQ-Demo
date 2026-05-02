@@ -19,4 +19,16 @@ class SimpleAmqpTest {
         // 3.发送消息
         rabbitTemplate.convertAndSend(queueName, message);
     }
+
+    @Test
+    public void testWorkQueue() {
+        // 1.指定队列名称
+        String queueName = "work.queue";
+        for (int i = 0; i <= 50; i++) {
+            // 2.准备消息
+            String message = "Hello, Spring Amqp_" + i;
+            // 3.发送消息
+            rabbitTemplate.convertAndSend(queueName, message);
+        }
+    }
 }
