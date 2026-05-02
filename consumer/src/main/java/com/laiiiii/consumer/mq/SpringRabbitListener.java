@@ -40,4 +40,14 @@ public class SpringRabbitListener {
     public void listenDirectQueue2(String message) {
         log.info("消费者2监听到 direct.queue2的消息: {}", message);
     }
+
+    @RabbitListener(queues = "topic.queue1")
+    public void listenTopicQueue1(String message) {
+        log.info("消费者1监听到 topic.queue1的消息: {}", message);
+    }
+
+    @RabbitListener(queues = "topic.queue2")
+    public void listenTopicQueue2(String message) {
+        log.info("消费者2监听到 topic.queue2的消息: {}", message);
+    }
 }
