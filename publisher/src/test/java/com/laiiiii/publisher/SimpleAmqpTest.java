@@ -41,4 +41,14 @@ class SimpleAmqpTest {
         // 3.发送消息
         rabbitTemplate.convertAndSend(exchangeName, "", message);
     }
+
+    @Test
+    public void testDirectQueue() {
+        // 1.指定交换机名称
+        String exchangeName = "hmall.direct";
+        // 2.准备消息
+        String message = "红色警戒！";
+        // 3.发送消息
+        rabbitTemplate.convertAndSend(exchangeName, "red", message);
+    }
 }
