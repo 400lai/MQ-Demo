@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageDeliveryMode;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,5 +111,14 @@ class SimpleAmqpTest {
         for (int i = 0; i < 1000000; i++) {
             rabbitTemplate.send("simple.queue", message);
         }
+    }
+
+    @Test
+    void testSendDelayMessage() {
+        rabbitTemplate.convertAndSend("normal.exchange", "hi", "hello !", message -> {
+            message.getMessageProperties().setExpiration("10000");
+            return message;
+        });
+        log.info("延迟消息已发送到 normal.exchange,将在10秒后过期并转入死信队列");
     }
 }
