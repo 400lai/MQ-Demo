@@ -2,6 +2,10 @@ package com.laiiiii.publisher;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,5 +98,19 @@ class SimpleAmqpTest {
         String message = "红色警戒！";
         // 5.发送消息（必须传入 CorrelationData 才能触发 Confirm 回调）
         rabbitTemplate.convertAndSend(exchangeName, "red111", message, cd);
+    }
+
+    @Test
+    void testSendMessage() {
+        // 1.自定义构建消息
+        Message message = MessageBuilder
+                .withBody("Hello, Spring Amqp!".getBytes())
+                .setDeliveryMode(MessageDeliveryMode.PERSISTENT)
+                .setContentEncoding("UTF-8")
+                .build();
+        // 2.发送消息
+        for (int i = 0; i < 1000000; i++) {
+            rabbitTemplate.send("simple.queue", message);
+        }
     }
 }
