@@ -2,6 +2,7 @@ package com.laiiiii.consumer.mq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -14,8 +15,9 @@ import java.util.Map;
 @Component
 public class SpringRabbitListener {
     @RabbitListener(queues = "simple.queue")
-    public void listenSimpleQueue(String message) {
-        log.info("监听到simple.queue的消息: {}", message);
+    public void listenSimpleQueue(Message message) {
+        log.info("监听到simple.queue的消息ID: {}", message.getMessageProperties().getMessageId());
+        log.info("监听到simple.queue的消息内容: {}", new String(message.getBody()));
     }
     @RabbitListener(queues = "work.queue")
     public void listenWorkQueue1(String message) {

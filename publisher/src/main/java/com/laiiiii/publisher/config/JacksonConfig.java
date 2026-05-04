@@ -6,17 +6,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Jackson JSON 消息转换器配置类
+ * Jackson 消息转换器配置类
+ * 配置 RabbitMQ 使用 Jackson 进行消息的 JSON 序列化与反序列化，
+ * 替代默认的 JDK 序列化机制，提高消息的可读性和跨语言兼容性。
  */
 @Configuration
 public class JacksonConfig {
-    /**
-     * 配置消息转换器为 JSON 格式
-     * 用于将 Java 对象序列化为 JSON 格式进行消息传递
-     * @return Jackson2JsonMessageConverter 消息转换器实例
-     */
+
     @Bean
     public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter jjmc = new Jackson2JsonMessageConverter();
+        jjmc.setCreateMessageIds(true);
+        return jjmc;
     }
 }
